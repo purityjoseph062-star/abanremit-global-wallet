@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AgentRouteImport } from './routes/agent'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppBeneficiariesRouteImport } from './routes/app.beneficiaries'
 import { Route as AppReceiveRouteImport } from './routes/app.receive'
@@ -44,6 +45,11 @@ const AppRoute = AppRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
@@ -83,6 +89,7 @@ export interface FileRoutesByFullPath {
   '/agent': typeof AgentRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
@@ -95,6 +102,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/agent': typeof AgentRoute
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
@@ -109,6 +117,7 @@ export interface FileRoutesById {
   '/agent': typeof AgentRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
     | '/agent'
     | '/app'
     | '/login'
+    | '/signup'
     | '/app/beneficiaries'
     | '/app/receive'
     | '/app/send'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agent'
     | '/login'
+    | '/signup'
     | '/app/beneficiaries'
     | '/app/receive'
     | '/app/send'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/agent'
     | '/app'
     | '/login'
+    | '/signup'
     | '/app/beneficiaries'
     | '/app/receive'
     | '/app/send'
@@ -163,6 +175,7 @@ export interface RootRouteChildren {
   AgentRoute: typeof AgentRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  SignupRoute: typeof SignupRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -200,6 +213,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app/': {
@@ -273,6 +293,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgentRoute: AgentRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  SignupRoute: SignupRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
