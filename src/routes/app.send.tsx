@@ -54,7 +54,7 @@ function Send() {
   return (
     <>
       <PageHeader title="Send money" desc="Every fee and rate is shown before you confirm. Demo PIN: 1234." />
-      <ol className="mb-6 flex flex-wrap gap-2">{STEPS.map((s, i) => <li key={s} className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${i === step ? "bg-primary text-primary-foreground" : i < step ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>{i < step ? <Check className="h-3 w-3" /> : i + 1}. {s}</li>)}</ol>
+      <ol className="mb-6 flex flex-wrap gap-2">{STEPS.map((s, i) => <li key={s} className={`flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${i === step ? "bg-primary text-primary-foreground" : i < step ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground"}`}>{i < step ? <Check className="h-3 w-3" /> : `${i + 1}.`} {s}</li>)}</ol>
       <div className="max-w-xl rounded-2xl border bg-card p-6">
         {err && <p role="alert" className="mb-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{err}</p>}
         {step === 0 && (
