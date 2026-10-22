@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 
 export function Logo({ inverted = false }: { inverted?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold" aria-label="AbanRemit home">
+    <Link to="/login" className="flex items-center gap-2 font-display text-lg font-bold" aria-label="AbanRemit">
       <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-accent-foreground">
         <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden><path d="M4 18 L12 5 L20 18 M8 13 H16" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </span>

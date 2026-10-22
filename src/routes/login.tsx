@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { DemoBanner, Logo } from "@/components/brand";
 import { setState, useDemo } from "@/lib/demo/store";
@@ -29,7 +29,7 @@ function Login() {
   return (
     <div className="min-h-screen bg-muted">
       <DemoBanner />
-      <div className="mx-auto max-w-xl px-6 py-16">
+      <div className="mx-auto max-w-xl px-5 py-10 sm:py-16">
         <Logo />
         <h1 className="mt-8 text-3xl font-bold">Choose a demo persona</h1>
         <p className="mt-2 text-muted-foreground">Simulated sign-in. Every person below is fictional. Demo transfer PIN: <strong>1234</strong>.</p>
@@ -44,6 +44,7 @@ function Login() {
             </li>
           ))}
         </ul>
+        <p className="mt-8 text-center text-sm">New to AbanRemit? <Link to="/signup" className="font-semibold text-primary">Create an account</Link></p>
       </div>
     </div>
   );
