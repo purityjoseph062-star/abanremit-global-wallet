@@ -6,7 +6,7 @@ import { api } from "@/lib/api";
 
 export function Logo({ inverted = false }: { inverted?: boolean }) {
   return (
-    <Link to="/" className="flex items-center gap-2 font-display text-lg font-bold" aria-label="AbanRemit home">
+    <Link to="/login" className="flex items-center gap-2 font-display text-lg font-bold" aria-label="AbanRemit">
       <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-accent-foreground">
         <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden><path d="M4 18 L12 5 L20 18 M8 13 H16" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </span>
@@ -19,7 +19,7 @@ export function DemoBanner() {
   if (api.mode !== "demo") return null;
   return (
     <div className="flex items-center justify-center gap-3 bg-accent px-4 py-1.5 text-xs font-semibold text-accent-foreground" role="status">
-      <FlaskConical className="h-3.5 w-3.5" /> DEMO MODE — all funds, rates, people and verifications are simulated.
+      <FlaskConical className="h-3.5 w-3.5 shrink-0" /> <span>DEMO MODE<span className="hidden sm:inline"> — all funds, rates, people and verifications are simulated.</span></span>
       <button
         className="inline-flex items-center gap-1 underline underline-offset-2"
         onClick={() => { resetDemo(); toast.success("Demo data reset to original seed"); setTimeout(() => window.location.reload(), 400); }}
