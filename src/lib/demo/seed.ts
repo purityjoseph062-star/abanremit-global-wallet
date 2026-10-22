@@ -1,0 +1,41 @@
+import type { Beneficiary, Transaction, User, Wallet } from "../domain/types";
+
+// Entirely fictional demo identities and balances.
+export const SEED_USERS: User[] = [
+  { id: "u_amina", name: "Amina Wanjiru (demo)", email: "amina@demo.abanremit.test", phone: "+254700000101", country: "KE", role: "customer", kycStatus: "approved" },
+  { id: "u_kito", name: "Kito Traders Ltd (demo)", email: "ops@kito.demo.test", phone: "+254700000202", country: "KE", role: "business_customer", kycStatus: "pending_review" },
+  { id: "u_agent", name: "Baraka Outlet #014 (demo)", email: "baraka@agent.demo.test", phone: "+254700000303", country: "KE", role: "agent", kycStatus: "approved" },
+  { id: "u_admin", name: "Grace Otieno (demo admin)", email: "grace@admin.demo.test", phone: "+254700000404", country: "KE", role: "administrator", kycStatus: "approved" },
+  { id: "u_comp", name: "Daniel Mwangi (demo compliance)", email: "daniel@admin.demo.test", phone: "+254700000505", country: "KE", role: "compliance_officer", kycStatus: "approved" },
+];
+
+export const SEED_WALLETS: Wallet[] = [
+  { id: "w1", number: "100000284751", ownerId: "u_amina", currency: "KES", accountType: "personal", status: "active", available: 8450000, pending: 120000, held: 0 },
+  { id: "w2", number: "100000284769", ownerId: "u_amina", currency: "USD", accountType: "personal", status: "active", available: 64200, pending: 0, held: 5000 },
+  { id: "w3", number: "100000391002", ownerId: "u_kito", currency: "KES", accountType: "business", status: "pending_activation", available: 0, pending: 0, held: 0 },
+  { id: "w4", number: "200000014003", ownerId: "u_agent", currency: "KES", accountType: "agent", status: "active", available: 25000000, pending: 0, held: 0 },
+];
+
+export const SEED_BENEFICIARIES: Beneficiary[] = [
+  { id: "b1", ownerId: "u_amina", name: "Joseph Kamau (demo)", type: "wallet", destination: "100000555123", currency: "KES", verified: true },
+  { id: "b2", ownerId: "u_amina", name: "Mary Nakato (demo)", type: "mobile_money", destination: "+256770000111", provider: "Demo Mobile UG", currency: "UGX", verified: true },
+  { id: "b3", ownerId: "u_amina", name: "Peter Ochieng (demo)", type: "bank", destination: "0011223344", provider: "Demo Bank KE", currency: "KES", verified: false },
+];
+
+const now = Date.now();
+const iso = (d: number) => new Date(now - d * 86400000).toISOString();
+
+export const SEED_TRANSACTIONS: Transaction[] = [
+  { id: "t1", reference: "DEMO-TRF-7Q2K1", idempotencyKey: "seed-1", type: "transfer", channel: "wallet", status: "completed", walletId: "w1", ownerId: "u_amina", currency: "KES", amount: 100000, fee: 2000, counterparty: "Joseph Kamau (demo)", createdAt: iso(1),
+    timeline: [{ status: "completed", at: iso(1), note: "Posted to demo ledger" }],
+    ledger: [{ account: "Sender wallet 100000284751", debit: 102000, credit: 0, currency: "KES" }, { account: "Recipient wallet 100000555123", debit: 0, credit: 100000, currency: "KES" }, { account: "Fee revenue", debit: 0, credit: 2000, currency: "KES" }] },
+  { id: "t2", reference: "DEMO-DEP-3M8PZ", idempotencyKey: "seed-2", type: "deposit", channel: "mobile_money", status: "pending", walletId: "w1", ownerId: "u_amina", currency: "KES", amount: 120000, fee: 0, counterparty: "Demo Mobile KE", createdAt: iso(0),
+    timeline: [{ status: "pending", at: iso(0), note: "Awaiting simulated provider confirmation" }], ledger: [] },
+  { id: "t3", reference: "DEMO-CIN-9AA21", idempotencyKey: "seed-3", type: "cash_in", channel: "agent", status: "completed", walletId: "w1", ownerId: "u_amina", currency: "KES", amount: 500000, fee: 0, counterparty: "Baraka Outlet #014 (demo)", createdAt: iso(4),
+    timeline: [{ status: "completed", at: iso(4), note: "Agent confirmed cash receipt (demo)" }],
+    ledger: [{ account: "Agent float 200000014003", debit: 500000, credit: 0, currency: "KES" }, { account: "Customer wallet 100000284751", debit: 0, credit: 500000, currency: "KES" }] },
+  { id: "t4", reference: "DEMO-WDR-55TXA", idempotencyKey: "seed-4", type: "withdrawal", channel: "bank", status: "failed", walletId: "w1", ownerId: "u_amina", currency: "KES", amount: 300000, fee: 8000, counterparty: "Demo Bank KE", createdAt: iso(6),
+    timeline: [{ status: "processing", at: iso(6), note: "Sent to demo provider" }, { status: "failed", at: iso(6), note: "Simulated provider rejection; reservation released" }], ledger: [] },
+  { id: "t5", reference: "DEMO-FX-2LL0P", idempotencyKey: "seed-5", type: "exchange", channel: "fx", status: "completed", walletId: "w2", ownerId: "u_amina", currency: "USD", amount: 20000, fee: 0, fxRate: 128.2, destAmount: 2564000, destCurrency: "KES", counterparty: "Own KES wallet", createdAt: iso(9),
+    timeline: [{ status: "completed", at: iso(9), note: "Illustrative demo rate applied" }], ledger: [] },
+];
