@@ -27,7 +27,7 @@ export function QrPreview({ value }: { value: string }) {
   const n = 21; let h = 0; for (const c of value) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   const cells: boolean[] = [];
   for (let i = 0; i < n * n; i++) { h = (h * 1103515245 + 12345) >>> 0; cells.push((h >> 16) % 2 === 0); }
-  const finder = (x: number, y: number) => [[0, 0], [n - 7, 0], [0, n - 7]].some(([fx, fy]) => x >= fx && x < fx + 7 && y >= fy && y < fy + 7);
+  const finder = (x: number, y: number) => ([[0, 0], [n - 7, 0], [0, n - 7]] as [number, number][]).some(([fx, fy]) => x >= fx && x < fx + 7 && y >= fy && y < fy + 7);
   return (
     <figure className="inline-block rounded-xl border bg-card p-3">
       <svg viewBox={`0 0 ${n} ${n}`} className="h-40 w-40 text-foreground" role="img" aria-label="QR receive preview (demo)">

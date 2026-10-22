@@ -70,9 +70,9 @@ export interface Transaction {
   currency: CurrencyCode;
   amount: number;
   fee: number;
-  fxRate?: number;
-  destAmount?: number;
-  destCurrency?: CurrencyCode;
+  fxRate?: number | undefined;
+  destAmount?: number | undefined;
+  destCurrency?: CurrencyCode | undefined;
   counterparty: string;
   createdAt: string;
   timeline: { status: TxStatus; at: string; note: string }[];
@@ -87,7 +87,7 @@ export interface Beneficiary {
   name: string;
   type: BeneficiaryType;
   destination: string;
-  provider?: string;
+  provider?: string | undefined;
   currency: CurrencyCode;
   verified: boolean;
 }
@@ -112,7 +112,7 @@ export interface TransferRequest {
   quoteId: string;
   pin: string;
   idempotencyKey: string;
-  simulate?: "success" | "pending" | "failure";
+  simulate?: "success" | "pending" | "failure" | undefined;
 }
 
 export interface CashInRequest {

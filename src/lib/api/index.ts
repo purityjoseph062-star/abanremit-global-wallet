@@ -169,12 +169,12 @@ export class DemoApiAdapter implements ApiAdapter {
 /** Talks to Laravel at /api/v1. Never falls back to demo data. */
 export class LaravelApiAdapter implements ApiAdapter {
   mode = "laravel" as const;
-  constructor(private base = (import.meta.env.VITE_API_BASE_URL ?? "") + "/api/v1") {}
+  constructor(private base = (import.meta.env["VITE_API_BASE_URL"] ?? "") + "/api/v1") {}
   private async req<T>(method: string, path: string, body?: unknown, idem?: string): Promise<T> {
     const res = await fetch(this.base + path, {
       method, credentials: "include",
       headers: { "Content-Type": "application/json", Accept: "application/json", ...(idem ? { "Idempotency-Key": idem } : {}) },
-      body: body ? JSON.stringify(body) : undefined,
+      ...(body ? { body: JSON.stringify(body) } : {}),
     }).catch(() => fail("NETWORK", "The AbanRemit API is unavailable."));
     const json = await (res as Response).json().catch(() => ({}));
     if (!(res as Response).ok) throw new ApiException(json.error ?? { code: "HTTP_" + (res as Response).status, message: "Request failed", correlationId: "" });
@@ -197,5 +197,5 @@ export class LaravelApiAdapter implements ApiAdapter {
   agents = { cashIn: ({ idempotencyKey, ...r }: CashInRequest) => this.req<Transaction>("POST", "/agent/cash-in", r, idempotencyKey) };
 }
 
-export const api: ApiAdapter = import.meta.env.VITE_API_MODE === "laravel" ? new LaravelApiAdapter() : new DemoApiAdapter();
+export const api: ApiAdapter = import.meta.env["VITE_API_MODE"] === "laravel" ? new LaravelApiAdapter() : new DemoApiAdapter();
 export const newIdempotencyKey = () => crypto.randomUUID();
