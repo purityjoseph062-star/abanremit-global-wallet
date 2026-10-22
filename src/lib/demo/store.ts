@@ -1,7 +1,7 @@
 // DEMO PERSISTENCE ONLY. localStorage is used solely to keep fictional demo
 // state across refreshes. Never store secrets, credentials or identity documents.
 import { useSyncExternalStore } from "react";
-import type { Beneficiary, Transaction, User, Wallet } from "../domain/types";
+import type { AppNotification, Beneficiary, Transaction, User, Wallet } from "../domain/types";
 import { SEED_BENEFICIARIES, SEED_TRANSACTIONS, SEED_USERS, SEED_WALLETS } from "./seed";
 
 export interface DemoState {
@@ -11,6 +11,7 @@ export interface DemoState {
   transactions: Transaction[];
   beneficiaries: Beneficiary[];
   idempotency: Record<string, string>; // key -> transaction id
+  notifications: AppNotification[];
 }
 
 const KEY = "abanremit_demo_state_v1";
@@ -19,6 +20,7 @@ export function seedState(): DemoState {
   return structuredClone({
     personaId: null, users: SEED_USERS, wallets: SEED_WALLETS,
     transactions: SEED_TRANSACTIONS, beneficiaries: SEED_BENEFICIARIES, idempotency: {},
+    notifications: [{ id: "n1", title: "New sign-in (demo)", body: "Chrome on Android, Nairobi", at: new Date().toISOString(), read: false }, { id: "n2", title: "Deposit awaiting funding", body: "DEMO-DEP-3M8PZ", at: new Date().toISOString(), read: false, txId: "t2" }],
   });
 }
 
@@ -29,7 +31,7 @@ function load(): DemoState {
   if (typeof window === "undefined") return seedState();
   try {
     const raw = window.localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as DemoState) : seedState();
+    return raw ? { ...seedState(), ...(JSON.parse(raw) as DemoState) } : seedState();
   } catch { return seedState(); }
 }
 

@@ -1,7 +1,8 @@
 // Centralized typed API layer. Components call `api.*` only — never mock data directly.
 // VITE_API_MODE=demo (default) uses DemoApiAdapter; VITE_API_MODE=laravel uses /api/v1.
 import type {
-  ApiError, Beneficiary, CashInRequest, CurrencyCode, Quote, Transaction, TransferRequest, Wallet,
+  AppNotification, DepositRequest, MovementMethod, MovementQuote, SimulatedOutcome, WithdrawalRequest,
+  Beneficiary, CashInRequest, CurrencyCode, Quote, Transaction, TransferRequest, Wallet,
 } from "../domain/types";
 import { demoFee, demoRate, toMinor, toMajor } from "../money";
 import { currentUser, getState, setState } from "../demo/store";
@@ -17,21 +18,32 @@ export interface ApiAdapter {
   transfers: { quote(walletId: string, beneficiaryId: string, amount: number): Promise<Quote>; create(r: TransferRequest): Promise<Transaction> };
   transactions: { list(): Promise<Transaction[]> };
   agents: { cashIn(r: CashInRequest): Promise<Transaction> };
+  deposits: MovementService<DepositRequest>;
+  withdrawals: MovementService<WithdrawalRequest>;
+  notifications: { list(): Promise<AppNotification[]>; markRead(id: string): Promise<void> };
 }
 
-export class ApiException extends Error {
-  constructor(public error: ApiError) { super(error.message); }
-}
+import { ApiException, delay, fail, rid } from "./errors";
+import { makeDemoMovements } from "./demo-movements";
+export { ApiException };
 
-const rid = (p: string) => `${p}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
-const fail = (code: string, message: string): never => { throw new ApiException({ code, message, correlationId: rid("corr") }); };
-const delay = (ms = 450) => new Promise((r) => setTimeout(r, ms));
+export interface MovementService<R> {
+  quote(walletId: string, method: MovementMethod, amount: number): Promise<MovementQuote>;
+  create(r: R): Promise<Transaction>;
+  cancel(txId: string): Promise<Transaction>;
+  /** DEMO ONLY — the Laravel adapter refuses this. */
+  simulate(txId: string, outcome: SimulatedOutcome): Promise<Transaction>;
+}
 
 /** Simulates the Laravel server. Server-side rules (fees, balances, idempotency) live here, not in screens. */
 export class DemoApiAdapter implements ApiAdapter {
   mode = "demo" as const;
   private quotes = new Map<string, Quote>();
-  constructor(private latency = 450) {}
+  deposits; withdrawals; notifications;
+  constructor(private latency = 450) {
+    const m = makeDemoMovements(latency);
+    this.deposits = m.deposits; this.withdrawals = m.withdrawals; this.notifications = m.notifications;
+  }
   private me() { const u = currentUser(); if (!u) fail("UNAUTHENTICATED", "Sign in with a demo persona."); return u!; }
 
   wallets = {
@@ -195,6 +207,23 @@ export class LaravelApiAdapter implements ApiAdapter {
   };
   transactions = { list: () => this.req<Transaction[]>("GET", "/transactions") };
   agents = { cashIn: ({ idempotencyKey, ...r }: CashInRequest) => this.req<Transaction>("POST", "/agent/cash-in", r, idempotencyKey) };
+  private noSim = (): Promise<Transaction> => Promise.reject(new ApiException({ code: "DEMO_ONLY", message: "Simulation is not available in production.", correlationId: "" }));
+  deposits = {
+    quote: (walletId: string, method: MovementMethod, amount: number) => this.req<MovementQuote>("POST", "/deposits/quotes", { walletId, method, amount }),
+    create: ({ idempotencyKey, ...r }: DepositRequest) => this.req<Transaction>("POST", "/deposits", r, idempotencyKey),
+    cancel: (id: string) => this.req<Transaction>("POST", `/deposits/${id}/cancel`),
+    simulate: () => this.noSim(),
+  };
+  withdrawals = {
+    quote: (walletId: string, method: MovementMethod, amount: number) => this.req<MovementQuote>("POST", "/withdrawals/quotes", { walletId, method, amount }),
+    create: ({ idempotencyKey, ...r }: WithdrawalRequest) => this.req<Transaction>("POST", "/withdrawals", r, idempotencyKey),
+    cancel: (id: string) => this.req<Transaction>("POST", `/withdrawals/${id}/cancel`),
+    simulate: () => this.noSim(),
+  };
+  notifications = {
+    list: () => this.req<AppNotification[]>("GET", "/notifications"),
+    markRead: (id: string) => this.req<void>("PATCH", `/notifications/${id}/read`),
+  };
 }
 
 export const api: ApiAdapter = import.meta.env["VITE_API_MODE"] === "laravel" ? new LaravelApiAdapter() : new DemoApiAdapter();
