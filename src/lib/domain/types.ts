@@ -49,7 +49,7 @@ export interface Wallet {
 
 export type TxType = "transfer" | "deposit" | "withdrawal" | "exchange" | "cash_in" | "cash_out";
 export type TxChannel = "wallet" | "bank" | "mobile_money" | "card" | "agent" | "fx";
-export type TxStatus = "pending" | "processing" | "completed" | "failed" | "reversed" | "cancelled";
+export type TxStatus = "pending" | "processing" | "completed" | "failed" | "reversed" | "cancelled" | "expired";
 
 export interface LedgerLine {
   account: string;
@@ -75,6 +75,9 @@ export interface Transaction {
   destCurrency?: CurrencyCode | undefined;
   counterparty: string;
   createdAt: string;
+  method?: string | undefined; // deposit/withdrawal method id
+  destination?: string | undefined; // masked destination, never full details
+  nextAction?: string | undefined;
   timeline: { status: TxStatus; at: string; note: string }[];
   ledger: LedgerLine[];
 }
@@ -127,3 +130,25 @@ export interface ApiError {
   message: string;
   correlationId: string;
 }
+
+export type MovementMethod = "mobile_money" | "bank" | "card" | "agent";
+
+export interface MovementQuote {
+  kind: "deposit" | "withdrawal";
+  walletId: string;
+  method: MovementMethod;
+  currency: CurrencyCode;
+  amount: number;
+  fee: number;
+  /** deposit: amount credited (amount − fee). withdrawal: total debited (amount + fee). */
+  net: number;
+  min: number;
+  max: number;
+  eta: string;
+}
+
+export interface DepositRequest { walletId: string; method: MovementMethod; amount: number; payerPhone?: string | undefined; idempotencyKey: string }
+export interface WithdrawalRequest { walletId: string; method: MovementMethod; amount: number; beneficiaryId?: string | undefined; pin: string; idempotencyKey: string }
+export type SimulatedOutcome = "success" | "failure" | "expire" | "reverse";
+
+export interface AppNotification { id: string; title: string; body: string; at: string; read: boolean; txId?: string | undefined }
