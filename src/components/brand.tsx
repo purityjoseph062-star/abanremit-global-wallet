@@ -22,7 +22,7 @@ export function DemoBanner() {
       <FlaskConical className="h-3.5 w-3.5" /> DEMO MODE — all funds, rates, people and verifications are simulated.
       <button
         className="inline-flex items-center gap-1 underline underline-offset-2"
-        onClick={() => { resetDemo(); toast.success("Demo data reset to original seed"); }}
+        onClick={() => { resetDemo(); toast.success("Demo data reset to original seed"); setTimeout(() => window.location.reload(), 400); }}
       >
         <RotateCcw className="h-3 w-3" /> Reset demo
       </button>
