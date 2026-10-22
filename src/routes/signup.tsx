@@ -54,7 +54,7 @@ function Signup() {
   const err = (k: keyof F) => f.formState.errors[k] && <p className="mt-1 text-xs text-destructive">{f.formState.errors[k]?.message}</p>;
 
   const finish = () => {
-    if (otp !== "123456") return toast.error("Incorrect code. Demo code is 123456.");
+    if (otp !== "123456") { toast.error("Incorrect code. Demo code is 123456."); return; }
     const v = pending!; const c = COUNTRIES.find((x) => x.c === v.country)!;
     const id = "u_" + crypto.randomUUID().slice(0, 8);
     const user: User = { id, name: v.name, email: v.email, phone: c.d + v.phone, country: v.country, role: v.accountType as Role, kycStatus: "pending_review" };
