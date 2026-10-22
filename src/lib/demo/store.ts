@@ -12,6 +12,7 @@ export interface DemoState {
   beneficiaries: Beneficiary[];
   idempotency: Record<string, string>; // key -> transaction id
   notifications: AppNotification[];
+  hideBalances?: boolean;
 }
 
 const KEY = "abanremit_demo_state_v1";
