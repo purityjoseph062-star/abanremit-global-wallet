@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDownLeft, ArrowLeftRight, Send, Users } from "lucide-react";
+import { ArrowDownLeft, MinusCircle, PlusCircle, Send } from "lucide-react";
 import { api } from "@/lib/api";
 import { PageHeader } from "@/components/portal-shell";
 import { WalletCard } from "@/components/wallet-bits";
@@ -23,7 +23,7 @@ function Dashboard() {
         {wallets.isLoading ? <div className="h-48 animate-pulse rounded-2xl bg-muted" /> : wallets.data?.map((w) => <WalletCard key={w.id} w={w} />)}
       </div>
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
-        {[{ to: "/app/send", l: "Send", i: Send }, { to: "/app/receive", l: "Receive", i: ArrowDownLeft }, { to: "/app/beneficiaries", l: "Recipients", i: Users }, { to: "/app/transactions", l: "History", i: ArrowLeftRight }].map((s) => (
+        {[{ to: "/app/deposit", l: "Add money", i: PlusCircle }, { to: "/app/send", l: "Send", i: Send }, { to: "/app/withdraw", l: "Withdraw", i: MinusCircle }, { to: "/app/receive", l: "Receive", i: ArrowDownLeft }].map((s) => (
           <Link key={s.to} to={s.to} className="flex items-center gap-3 rounded-xl border bg-card p-4 font-semibold transition hover:border-primary"><s.i className="h-5 w-5 text-primary" />{s.l}</Link>
         ))}
       </div>
