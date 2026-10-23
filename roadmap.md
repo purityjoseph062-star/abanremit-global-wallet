@@ -5,7 +5,8 @@ Done (pass 1): design system, typed domain + permissions, Demo/Laravel API adapt
 Open:
 - [x] Public site dropped by request: / goes to login; sign-up with simulated phone code added
 - [ ] Registration + OTP + KYC onboarding flow, password reset, MFA demo
-- [ ] Customer: add money, withdraw, exchange, e-statements, KYC & security settings, support/disputes
+- [x] Customer: add money + withdraw pages
+- [ ] Customer: exchange, e-statements, KYC & security settings, support/disputes
 - [ ] Agent: cash-out, commissions, settlements, reconciliation
 - [ ] Admin: customers, payment ops, agent mgmt, compliance cases, configuration
 - [ ] docs/ (10 spec files incl. OpenAPI 3.1)
