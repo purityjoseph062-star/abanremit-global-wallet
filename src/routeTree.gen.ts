@@ -17,10 +17,12 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppBeneficiariesRouteImport } from './routes/app.beneficiaries'
+import { Route as AppDepositRouteImport } from './routes/app.deposit'
 import { Route as AppReceiveRouteImport } from './routes/app.receive'
 import { Route as AppSendRouteImport } from './routes/app.send'
 import { Route as AppTransactionsRouteImport } from './routes/app.transactions'
 import { Route as AppWalletsRouteImport } from './routes/app.wallets'
+import { Route as AppWithdrawRouteImport } from './routes/app.withdraw'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -62,6 +64,11 @@ const AppBeneficiariesRoute = AppBeneficiariesRouteImport.update({
   path: '/beneficiaries',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDepositRoute = AppDepositRouteImport.update({
+  id: '/deposit',
+  path: '/deposit',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppReceiveRoute = AppReceiveRouteImport.update({
   id: '/receive',
   path: '/receive',
@@ -82,6 +89,11 @@ const AppWalletsRoute = AppWalletsRouteImport.update({
   path: '/wallets',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWithdrawRoute = AppWithdrawRouteImport.update({
+  id: '/withdraw',
+  path: '/withdraw',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -91,10 +103,12 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
+  '/app/deposit': typeof AppDepositRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
   '/app/transactions': typeof AppTransactionsRoute
   '/app/wallets': typeof AppWalletsRoute
+  '/app/withdraw': typeof AppWithdrawRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRoutesByTo {
@@ -104,10 +118,12 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
+  '/app/deposit': typeof AppDepositRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
   '/app/transactions': typeof AppTransactionsRoute
   '/app/wallets': typeof AppWalletsRoute
+  '/app/withdraw': typeof AppWithdrawRoute
   '/app': typeof AppIndexRoute
 }
 export interface FileRoutesById {
@@ -119,10 +135,12 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/signup': typeof SignupRoute
   '/app/beneficiaries': typeof AppBeneficiariesRoute
+  '/app/deposit': typeof AppDepositRoute
   '/app/receive': typeof AppReceiveRoute
   '/app/send': typeof AppSendRoute
   '/app/transactions': typeof AppTransactionsRoute
   '/app/wallets': typeof AppWalletsRoute
+  '/app/withdraw': typeof AppWithdrawRoute
   '/app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
@@ -135,10 +153,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/beneficiaries'
+    | '/app/deposit'
     | '/app/receive'
     | '/app/send'
     | '/app/transactions'
     | '/app/wallets'
+    | '/app/withdraw'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -148,10 +168,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/beneficiaries'
+    | '/app/deposit'
     | '/app/receive'
     | '/app/send'
     | '/app/transactions'
     | '/app/wallets'
+    | '/app/withdraw'
     | '/app'
   id:
     | '__root__'
@@ -162,10 +184,12 @@ export interface FileRouteTypes {
     | '/login'
     | '/signup'
     | '/app/beneficiaries'
+    | '/app/deposit'
     | '/app/receive'
     | '/app/send'
     | '/app/transactions'
     | '/app/wallets'
+    | '/app/withdraw'
     | '/app/'
   fileRoutesById: FileRoutesById
 }
@@ -236,6 +260,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBeneficiariesRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/deposit': {
+      id: '/app/deposit'
+      path: '/deposit'
+      fullPath: '/app/deposit'
+      preLoaderRoute: typeof AppDepositRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/receive': {
       id: '/app/receive'
       path: '/receive'
@@ -264,24 +295,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppWalletsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/withdraw': {
+      id: '/app/withdraw'
+      path: '/withdraw'
+      fullPath: '/app/withdraw'
+      preLoaderRoute: typeof AppWithdrawRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppBeneficiariesRoute: typeof AppBeneficiariesRoute
+  AppDepositRoute: typeof AppDepositRoute
   AppReceiveRoute: typeof AppReceiveRoute
   AppSendRoute: typeof AppSendRoute
   AppTransactionsRoute: typeof AppTransactionsRoute
   AppWalletsRoute: typeof AppWalletsRoute
+  AppWithdrawRoute: typeof AppWithdrawRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppBeneficiariesRoute: AppBeneficiariesRoute,
+  AppDepositRoute: AppDepositRoute,
   AppReceiveRoute: AppReceiveRoute,
   AppSendRoute: AppSendRoute,
   AppTransactionsRoute: AppTransactionsRoute,
   AppWalletsRoute: AppWalletsRoute,
+  AppWithdrawRoute: AppWithdrawRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
