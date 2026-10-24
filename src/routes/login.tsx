@@ -1,20 +1,23 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { DemoBanner, Logo } from "@/components/brand";
+import { useState } from "react";
+import { ArrowRight, FlaskConical, UserRound } from "lucide-react";
+import { AuthLayout } from "@/components/auth-layout";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { setState, useDemo } from "@/lib/demo/store";
 import { can, ROLE_LABEL } from "@/lib/permissions";
-import type { User } from "@/lib/domain/types";
 
 export const Route = createFileRoute("/login")({
   validateSearch: z.object({ denied: z.string().optional() }),
-  head: () => ({
-    meta: [
-      { title: "Sign in — AbanRemit demo" },
-      { name: "description", content: "Choose a fictional demo persona to explore AbanRemit." },
-      { property: "og:title", content: "Sign in — AbanRemit demo" },
-      { property: "og:description", content: "Choose a fictional demo persona to explore AbanRemit." },
-    ],
-  }),
+  head: () => ({ meta: [
+    { title: "Sign in — AbanRemit Wallet" },
+    { name: "description", content: "Access your AbanRemit demo wallet and explore money transfers." },
+    { property: "og:title", content: "Sign in — AbanRemit Wallet" },
+    { property: "og:description", content: "Access your AbanRemit demo wallet and explore money transfers." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ] }),
   component: Login,
 });
 
@@ -22,30 +25,25 @@ function Login() {
   const users = useDemo((s) => s.users);
   const { denied } = Route.useSearch();
   const navigate = useNavigate();
-  const go = (u: User) => {
-    setState((s) => ({ ...s, personaId: u.id }));
-    navigate({ to: can(u.role, "portal.customer") ? "/app" : can(u.role, "portal.agent") ? "/agent" : "/admin" });
-  };
+  const [selected, setSelected] = useState("");
+  const [busy, setBusy] = useState(false);
+  const user = users.find((u) => u.id === selected) ?? users[0];
   return (
-    <div className="min-h-screen bg-muted">
-      <DemoBanner />
-      <div className="mx-auto max-w-xl px-5 py-10 sm:py-16">
-        <Logo />
-        <h1 className="mt-8 text-3xl font-bold">Choose a demo persona</h1>
-        <p className="mt-2 text-muted-foreground">Simulated sign-in. Every person below is fictional. Demo transfer PIN: <strong>1234</strong>.</p>
-        {denied && <p role="alert" className="mt-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">That area requires the “{denied}” permission. Pick an authorised persona.</p>}
-        <ul className="mt-8 space-y-3">
-          {users.map((u) => (
-            <li key={u.id}>
-              <button onClick={() => go(u)} className="flex w-full items-center justify-between rounded-xl border bg-card p-4 text-left transition hover:border-primary focus-visible:outline-2 focus-visible:outline-ring">
-                <span><span className="block font-semibold">{u.name}</span><span className="text-sm text-muted-foreground">{u.email}</span></span>
-                <span className="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-secondary-foreground">{ROLE_LABEL[u.role]}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-8 text-center text-sm">New to AbanRemit? <Link to="/signup" className="font-semibold text-primary">Create an account</Link></p>
-      </div>
-    </div>
+    <AuthLayout>
+      <span className="mb-5 inline-flex items-center gap-2 rounded-md bg-secondary px-3 py-1.5 text-xs font-semibold text-secondary-foreground"><UserRound className="size-3.5" /> Your wallet, connected</span>
+      <h1 className="text-3xl font-bold sm:text-4xl">Welcome back</h1>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">Sign in to your AbanRemit wallet.</p>
+      {denied && <p role="alert" className="mt-5 rounded-md bg-destructive/10 p-3 text-sm text-destructive">That area requires the “{denied}” permission. Choose an authorised demo account.</p>}
+      <form className="mt-8 space-y-5" onSubmit={(e) => { e.preventDefault(); if (!user || busy) return; setBusy(true); setState((s) => ({ ...s, personaId: user.id })); navigate({ to: can(user.role, "portal.customer") ? "/app" : can(user.role, "portal.agent") ? "/agent" : "/admin" }); }}>
+        <div>
+          <Label htmlFor="demo-account">Demo account</Label>
+          <select id="demo-account" value={user?.id ?? ""} onChange={(e) => setSelected(e.target.value)} className="mt-2 h-12 w-full rounded-md border bg-background px-3 text-sm">{users.map((u) => <option key={u.id} value={u.id}>{u.name} — {ROLE_LABEL[u.role]}</option>)}</select>
+        </div>
+        {user && <div className="flex items-center gap-3 border-l-2 border-primary pl-3"><UserRound className="size-5 shrink-0 text-primary" /><div className="min-w-0"><p className="break-all text-sm font-medium">{user.email}</p><p className="mt-0.5 text-xs text-muted-foreground">{ROLE_LABEL[user.role]}</p></div></div>}
+        <Button type="submit" className="h-12 w-full" disabled={!user || busy}>{busy ? "Opening wallet…" : "Sign in to demo"}<ArrowRight /></Button>
+      </form>
+      <div className="mt-6 flex gap-3 rounded-md bg-muted p-4"><FlaskConical className="mt-0.5 size-4 shrink-0 text-primary" /><p className="text-xs leading-5 text-muted-foreground">Simulated access with fictional accounts. No password needed. Transfer PIN: <strong className="text-foreground">1234</strong>.</p></div>
+      <p className="mt-8 text-center text-sm text-muted-foreground">New to AbanRemit? <Link to="/signup" className="font-semibold text-primary">Create an account</Link></p>
+    </AuthLayout>
   );
 }
