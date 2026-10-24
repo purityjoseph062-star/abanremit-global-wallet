@@ -14,3 +14,4 @@
 - Money is integer minor units with per-currency precision (src/lib/money.ts) — avoids float errors.
 - Portal routes guard with requirePermission in beforeLoad (ssr: false, demo state lives in browser storage); Laravel must enforce the same permissions.
 - Account pages share AuthLayout and scoped semantic theme tokens; retain explicitly simulated access until Laravel authentication is connected, never store passwords in demo state.
+- Sign-in submission stays disabled until hydration attaches its handler, preventing native form submissions from reloading the login page.
