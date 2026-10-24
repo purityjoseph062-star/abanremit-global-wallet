@@ -157,10 +157,34 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 }
 
 @utility bg-hero { background: var(--gradient-hero); }
 @utility bg-wallet-card { background: var(--gradient-card); }
 @utility shadow-elegant { box-shadow: var(--shadow-elegant); }
+
+@theme inline {
+  --color-brand-surface: var(--brand-surface);
+  --color-brand-caption: var(--brand-caption);
+}
+
+:root { --brand-surface: oklch(0 0 0); --brand-caption: oklch(0.8 0.01 250); }
+.auth-theme {
+  --background: oklch(0.99 0.002 250);
+  --foreground: oklch(0.23 0.02 250);
+  --primary: oklch(0.46 0.18 258);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.025 250);
+  --secondary-foreground: oklch(0.4 0.13 255);
+  --accent: oklch(0.91 0.05 145);
+  --accent-foreground: oklch(0.32 0.08 145);
+  --muted: oklch(0.96 0.006 250);
+  --muted-foreground: oklch(0.48 0.025 250);
+  --border: oklch(0.89 0.012 250);
+  --input: oklch(0.87 0.014 250);
+  --ring: oklch(0.46 0.18 258);
+  --radius: 0.5rem;
+}
+.auth-brand { background: var(--brand-surface); }

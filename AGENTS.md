@@ -13,3 +13,4 @@
 - Screens call only the typed `api` from src/lib/api; DemoApiAdapter simulates server rules (fees, idempotency, ledger) and LaravelApiAdapter targets /api/v1 with no demo fallback — keeps demo and production swappable via VITE_API_MODE.
 - Money is integer minor units with per-currency precision (src/lib/money.ts) — avoids float errors.
 - Portal routes guard with requirePermission in beforeLoad (ssr: false, demo state lives in browser storage); Laravel must enforce the same permissions.
+- Account pages share AuthLayout and scoped semantic theme tokens; retain explicitly simulated access until Laravel authentication is connected, never store passwords in demo state.
