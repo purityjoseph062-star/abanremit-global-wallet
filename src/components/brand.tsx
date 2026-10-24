@@ -3,13 +3,12 @@ import { FlaskConical, RotateCcw } from "lucide-react";
 import { resetDemo } from "@/lib/demo/store";
 import { toast } from "sonner";
 import { api } from "@/lib/api";
+import logo from "@/assets/abanremit-logo.png.asset.json";
 
 export function Logo({ inverted = false }: { inverted?: boolean }) {
   return (
     <Link to="/login" className="flex items-center gap-2 font-display text-lg font-bold" aria-label="AbanRemit">
-      <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-accent-foreground">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden><path d="M4 18 L12 5 L20 18 M8 13 H16" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </span>
+      <img src={logo.url} alt="" className="h-11 w-11 rounded-md object-contain" />
       <span className={inverted ? "text-primary-foreground" : "text-foreground"}>Aban<span className="text-accent">Remit</span></span>
     </Link>
   );
